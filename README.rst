@@ -10,13 +10,10 @@ Assign Roles to Users to define :
 - what actions Users can perform in NGINX Controller
 - which ``environment(s)`` Users can access (``gateways``, ``components``...)
 
-|pic1| any text |pic2|
-
-.. |pic1| figure:: _figures/gw.png
-   :width: 45%
-
-.. |pic2| figure:: _figures/component.png
-   :width: 45%
+.. figure:: _figures/gw.png
+    :width: 50 %
+.. figure:: _figures/component.png
+    :width: 50 %
 
 - instance ``location(s)`` on which Users can deploy (``placement`` property in ``gateway`` object)
 
