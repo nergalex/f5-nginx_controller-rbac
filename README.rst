@@ -11,9 +11,10 @@ Assign Roles to Users to define :
 - which ``environment(s)`` Users can access (``gateways``, ``components``...)
 
 .. figure:: _figures/gw.png
-    :figwidth: 50 %
+    :height: 200
+    :width: 200
 .. figure:: _figures/component.png
-    :figwidth: 50 %
+    :width: 50 %
 
 - instance ``location(s)`` on which Users can deploy (``placement`` property in ``gateway`` object)
 
