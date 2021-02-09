@@ -1,0 +1,1064 @@
+{
+	"info": {
+		"_postman_id": "9c029086-5cb9-4440-a325-d4a81bbcfffc",
+		"name": "NGINX_Controller-RBAC",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Login to Controller",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\t\"credentials\": {\r\n\t\t\"type\": \"BASIC\",\r\n\t\t\"username\": \"{{username}}\",\r\n\t\t\"password\": \"{{password}}\"\r\n\t}\r\n}"
+				},
+				"url": {
+					"raw": "https://{{controller_fqdn}}/api/v1/platform/login",
+					"protocol": "https",
+					"host": [
+						"{{controller_fqdn}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"platform",
+						"login"
+					]
+				},
+				"description": "Returns a cookie / authentication token\n"
+			},
+			"response": []
+		},
+		{
+			"name": "Upsert a Role - admin full",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"desiredState\": {\n        \"permissions\": [\n            {\n                \"path\": \"/infrastructure/locations/nginxwaf\",\n                \"access\": \"READ\"\n            },\n            {\n                \"path\": \"/infrastructure/locations/nginxapigw\",\n                \"access\": \"NONE\"\n            },\n            {\n                \"path\": \"/infrastructure/locations/devportal\",\n                \"access\": \"NONE\"\n            },\n            {\n                \"path\": \"/services/environments/env_south_f5/\",\n                \"access\": \"NONE\"\n            },\n            {\n                \"path\": \"/services/environments/env_north_prod/\",\n                \"access\": \"NONE\"\n            },\n            {\n                \"path\": \"/services/environments/env_south_prod/\",\n                \"access\": \"NONE\"\n            },\n            {\n                \"path\": \"/services/environments/env_north_f5/\",\n                \"access\": \"FULL\"\n            },\n            {\n                \"path\": \"/services/environments/env_north_f5/gateways/\",\n                \"access\": \"FULL\"\n            }\n        ]\n    },\n    \"metadata\": {\n        \"kind\": \"role\",\n        \"name\": \"acme_admin_full\",\n        \"tags\": [\n            \"acme\",\n            \"admin\",\n            \"full\"\n        ]\n    }\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/platform/roles/acme_admin_full",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"platform",
+						"roles",
+						"acme_admin_full"
+					]
+				},
+				"description": "Creates a new Role resource or updates an existing Role resource.\n"
+			},
+			"response": [
+				{
+					"name": "User authentication is invalid or missing.\n",
+					"originalRequest": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"desiredState\": {\n        \"permissions\": [\n            {\n                \"access\": \"WRITE\",\n                \"path\": \"/services/environments/dev/\"\n            }\n        ]\n    },\n    \"metadata\": {\n        \"kind\": \"role\",\n        \"name\": \"role1\",\n        \"tags\": [\n            \"dev\",\n            \"test\"\n        ]\n    }\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/platform/roles/:roleName",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"platform",
+								"roles",
+								":roleName"
+							],
+							"variable": [
+								{
+									"key": "roleName"
+								}
+							]
+						}
+					},
+					"status": "Unauthorized",
+					"code": 401,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n \"message\": \"No session cookie found in the request header.\",\n \"code\": 3463\n}"
+				},
+				{
+					"name": "Bad input parameter, or possibly a bad URI. Check the input for typos and try again.\n",
+					"originalRequest": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"desiredState\": {\n        \"permissions\": [\n            {\n                \"access\": \"WRITE\",\n                \"path\": \"/services/environments/dev/\"\n            }\n        ]\n    },\n    \"metadata\": {\n        \"kind\": \"role\",\n        \"name\": \"role1\",\n        \"tags\": [\n            \"dev\",\n            \"test\"\n        ]\n    }\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/platform/roles/:roleName",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"platform",
+								"roles",
+								":roleName"
+							],
+							"variable": [
+								{
+									"key": "roleName"
+								}
+							]
+						}
+					},
+					"status": "Bad Request",
+					"code": 400,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n \"code\": 3457,\n \"message\": \"Error parsing the user to create from the request payload.\",\n \"details\": [\n  {\n   \"description\": \"Request body has an error: doesn't match the schema: Error at \\\"/desiredState/permissions/0/access\\\":JSON value is not one of the allowed values\\nSchema:\\n  {\\n    \\\"enum\\\": [\\n      \\\"NONE\\\",\\n      \\\"READ\\\",\\n      \\\"WRITE\\\",\\n      \\\"FULL\\\"\\n    ],\\n    \\\"type\\\": \\\"string\\\"\\n  }\\n\\nValue:\\n  \\\"DELETE\\\"\\n\"\n  }\n ]\n}"
+				},
+				{
+					"name": "Successfully created the specified Role resource.\n",
+					"originalRequest": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"desiredState\": {\n        \"permissions\": [\n            {\n                \"access\": \"WRITE\",\n                \"path\": \"/services/environments/dev/\"\n            }\n        ]\n    },\n    \"metadata\": {\n        \"kind\": \"role\",\n        \"name\": \"role1\",\n        \"tags\": [\n            \"dev\",\n            \"test\"\n        ]\n    }\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/platform/roles/:roleName",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"platform",
+								"roles",
+								":roleName"
+							],
+							"variable": [
+								{
+									"key": "roleName"
+								}
+							]
+						}
+					},
+					"status": "Created",
+					"code": 201,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n \"currentStatus\": {\n  \"permissions\": [\n   {\n    \"access\": \"WRITE\",\n    \"path\": \"/services/environments/dev/\"\n   }\n  ]\n },\n \"desiredState\": {\n  \"permissions\": [\n   {\n    \"access\": \"WRITE\",\n    \"path\": \"/services/environments/dev/\"\n   }\n  ]\n },\n \"metadata\": {\n  \"createTime\": \"2020-02-24T22:38:33.842929Z\",\n  \"kind\": \"role\",\n  \"name\": \"role1\",\n  \"updateTime\": \"2020-02-24T22:53:14.340686Z\",\n  \"tags\": [\n   \"dev\",\n   \"test\"\n  ]\n }\n}"
+				},
+				{
+					"name": "Successfully updated the specified Role resource.\n",
+					"originalRequest": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"desiredState\": {\n        \"permissions\": [\n            {\n                \"access\": \"WRITE\",\n                \"path\": \"/services/environments/dev/\"\n            }\n        ]\n    },\n    \"metadata\": {\n        \"kind\": \"role\",\n        \"name\": \"role1\",\n        \"tags\": [\n            \"dev\",\n            \"test\"\n        ]\n    }\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/platform/roles/:roleName",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"platform",
+								"roles",
+								":roleName"
+							],
+							"variable": [
+								{
+									"key": "roleName"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n \"currentStatus\": {\n  \"permissions\": [\n   {\n    \"access\": \"WRITE\",\n    \"path\": \"/services/environments/dev/\"\n   }\n  ]\n },\n \"desiredState\": {\n  \"permissions\": [\n   {\n    \"access\": \"WRITE\",\n    \"path\": \"/services/environments/dev/\"\n   }\n  ]\n },\n \"metadata\": {\n  \"createTime\": \"2020-02-24T22:38:33.842929Z\",\n  \"kind\": \"role\",\n  \"name\": \"role1\",\n  \"updateTime\": \"2020-02-24T22:53:14.340686Z\",\n  \"tags\": [\n   \"dev\",\n   \"test\"\n  ]\n }\n}"
+				},
+				{
+					"name": "The request failed due to insufficient privileges.\n",
+					"originalRequest": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"desiredState\": {\n        \"permissions\": [\n            {\n                \"access\": \"WRITE\",\n                \"path\": \"/services/environments/dev/\"\n            }\n        ]\n    },\n    \"metadata\": {\n        \"kind\": \"role\",\n        \"name\": \"role1\",\n        \"tags\": [\n            \"dev\",\n            \"test\"\n        ]\n    }\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/platform/roles/:roleName",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"platform",
+								"roles",
+								":roleName"
+							],
+							"variable": [
+								{
+									"key": "roleName"
+								}
+							]
+						}
+					},
+					"status": "Forbidden",
+					"code": 403,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n \"message\": \"user is not authorized\",\n \"code\": 1235\n}"
+				},
+				{
+					"name": "The request cannot be processed because of an internal server error.\n",
+					"originalRequest": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"desiredState\": {\n        \"permissions\": [\n            {\n                \"access\": \"WRITE\",\n                \"path\": \"/services/environments/dev/\"\n            }\n        ]\n    },\n    \"metadata\": {\n        \"kind\": \"role\",\n        \"name\": \"role1\",\n        \"tags\": [\n            \"dev\",\n            \"test\"\n        ]\n    }\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/platform/roles/:roleName",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"platform",
+								"roles",
+								":roleName"
+							],
+							"variable": [
+								{
+									"key": "roleName"
+								}
+							]
+						}
+					},
+					"status": "Internal Server Error",
+					"code": 500,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n \"code\": 8913,\n \"message\": \"Failed to add permissions to database.\",\n \"details\": [\n  {\n   \"description\": \"The request cannot be processed because of an internal server error.\"\n  }\n ]\n}"
+				}
+			]
+		},
+		{
+			"name": "Upsert a Role - admin app",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"desiredState\": {\n        \"permissions\": [\n            {\n                \"access\": \"READ\",\n                \"path\": \"/infrastructure/locations/nginxwaf/\"\n            },\n            {\n                \"access\": \"NONE\",\n                \"path\": \"/infrastructure/locations/nginxapigw/\"\n            },\n            {\n                \"access\": \"NONE\",\n                \"path\": \"/infrastructure/locations/devportal/\"\n            },\n            {\n                \"access\": \"NONE\",\n                \"path\": \"/services/environments/env_south_f5/\"\n            },\n            {\n                \"access\": \"NONE\",\n                \"path\": \"/services/environments/env_north_prod/\"\n            },\n            {\n                \"access\": \"NONE\",\n                \"path\": \"/services/environments/env_south_prod/\"\n            },\n            {\n                \"access\": \"READ\",\n                \"path\": \"/services/environments/env_north_f5/\"\n            },\n            {\n                \"access\": \"FULL\",\n                \"path\": \"/services/environments/env_north_f5/apps/\"\n            }\n        ]\n    },\n    \"metadata\": {\n        \"createTime\": \"2021-02-09T23:37:56.887984Z\",\n        \"kind\": \"role\",\n        \"name\": \"acme_admin_apps\",\n        \"tags\": [\n            \"acme\",\n            \"admin\",\n            \"apps\"\n        ],\n        \"updateTime\": \"2021-02-09T23:57:47.475962Z\"\n    }\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/platform/roles/acme_admin_apps",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"platform",
+						"roles",
+						"acme_admin_apps"
+					]
+				},
+				"description": "Creates a new Role resource or updates an existing Role resource.\n"
+			},
+			"response": [
+				{
+					"name": "User authentication is invalid or missing.\n",
+					"originalRequest": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"desiredState\": {\n        \"permissions\": [\n            {\n                \"access\": \"WRITE\",\n                \"path\": \"/services/environments/dev/\"\n            }\n        ]\n    },\n    \"metadata\": {\n        \"kind\": \"role\",\n        \"name\": \"role1\",\n        \"tags\": [\n            \"dev\",\n            \"test\"\n        ]\n    }\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/platform/roles/:roleName",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"platform",
+								"roles",
+								":roleName"
+							],
+							"variable": [
+								{
+									"key": "roleName"
+								}
+							]
+						}
+					},
+					"status": "Unauthorized",
+					"code": 401,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n \"message\": \"No session cookie found in the request header.\",\n \"code\": 3463\n}"
+				},
+				{
+					"name": "Successfully created the specified Role resource.\n",
+					"originalRequest": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"desiredState\": {\n        \"permissions\": [\n            {\n                \"access\": \"WRITE\",\n                \"path\": \"/services/environments/dev/\"\n            }\n        ]\n    },\n    \"metadata\": {\n        \"kind\": \"role\",\n        \"name\": \"role1\",\n        \"tags\": [\n            \"dev\",\n            \"test\"\n        ]\n    }\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/platform/roles/:roleName",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"platform",
+								"roles",
+								":roleName"
+							],
+							"variable": [
+								{
+									"key": "roleName"
+								}
+							]
+						}
+					},
+					"status": "Created",
+					"code": 201,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n \"currentStatus\": {\n  \"permissions\": [\n   {\n    \"access\": \"WRITE\",\n    \"path\": \"/services/environments/dev/\"\n   }\n  ]\n },\n \"desiredState\": {\n  \"permissions\": [\n   {\n    \"access\": \"WRITE\",\n    \"path\": \"/services/environments/dev/\"\n   }\n  ]\n },\n \"metadata\": {\n  \"createTime\": \"2020-02-24T22:38:33.842929Z\",\n  \"kind\": \"role\",\n  \"name\": \"role1\",\n  \"updateTime\": \"2020-02-24T22:53:14.340686Z\",\n  \"tags\": [\n   \"dev\",\n   \"test\"\n  ]\n }\n}"
+				},
+				{
+					"name": "The request cannot be processed because of an internal server error.\n",
+					"originalRequest": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"desiredState\": {\n        \"permissions\": [\n            {\n                \"access\": \"WRITE\",\n                \"path\": \"/services/environments/dev/\"\n            }\n        ]\n    },\n    \"metadata\": {\n        \"kind\": \"role\",\n        \"name\": \"role1\",\n        \"tags\": [\n            \"dev\",\n            \"test\"\n        ]\n    }\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/platform/roles/:roleName",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"platform",
+								"roles",
+								":roleName"
+							],
+							"variable": [
+								{
+									"key": "roleName"
+								}
+							]
+						}
+					},
+					"status": "Internal Server Error",
+					"code": 500,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n \"code\": 8913,\n \"message\": \"Failed to add permissions to database.\",\n \"details\": [\n  {\n   \"description\": \"The request cannot be processed because of an internal server error.\"\n  }\n ]\n}"
+				},
+				{
+					"name": "Bad input parameter, or possibly a bad URI. Check the input for typos and try again.\n",
+					"originalRequest": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"desiredState\": {\n        \"permissions\": [\n            {\n                \"access\": \"WRITE\",\n                \"path\": \"/services/environments/dev/\"\n            }\n        ]\n    },\n    \"metadata\": {\n        \"kind\": \"role\",\n        \"name\": \"role1\",\n        \"tags\": [\n            \"dev\",\n            \"test\"\n        ]\n    }\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/platform/roles/:roleName",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"platform",
+								"roles",
+								":roleName"
+							],
+							"variable": [
+								{
+									"key": "roleName"
+								}
+							]
+						}
+					},
+					"status": "Bad Request",
+					"code": 400,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n \"code\": 3457,\n \"message\": \"Error parsing the user to create from the request payload.\",\n \"details\": [\n  {\n   \"description\": \"Request body has an error: doesn't match the schema: Error at \\\"/desiredState/permissions/0/access\\\":JSON value is not one of the allowed values\\nSchema:\\n  {\\n    \\\"enum\\\": [\\n      \\\"NONE\\\",\\n      \\\"READ\\\",\\n      \\\"WRITE\\\",\\n      \\\"FULL\\\"\\n    ],\\n    \\\"type\\\": \\\"string\\\"\\n  }\\n\\nValue:\\n  \\\"DELETE\\\"\\n\"\n  }\n ]\n}"
+				},
+				{
+					"name": "Successfully updated the specified Role resource.\n",
+					"originalRequest": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"desiredState\": {\n        \"permissions\": [\n            {\n                \"access\": \"WRITE\",\n                \"path\": \"/services/environments/dev/\"\n            }\n        ]\n    },\n    \"metadata\": {\n        \"kind\": \"role\",\n        \"name\": \"role1\",\n        \"tags\": [\n            \"dev\",\n            \"test\"\n        ]\n    }\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/platform/roles/:roleName",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"platform",
+								"roles",
+								":roleName"
+							],
+							"variable": [
+								{
+									"key": "roleName"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n \"currentStatus\": {\n  \"permissions\": [\n   {\n    \"access\": \"WRITE\",\n    \"path\": \"/services/environments/dev/\"\n   }\n  ]\n },\n \"desiredState\": {\n  \"permissions\": [\n   {\n    \"access\": \"WRITE\",\n    \"path\": \"/services/environments/dev/\"\n   }\n  ]\n },\n \"metadata\": {\n  \"createTime\": \"2020-02-24T22:38:33.842929Z\",\n  \"kind\": \"role\",\n  \"name\": \"role1\",\n  \"updateTime\": \"2020-02-24T22:53:14.340686Z\",\n  \"tags\": [\n   \"dev\",\n   \"test\"\n  ]\n }\n}"
+				},
+				{
+					"name": "The request failed due to insufficient privileges.\n",
+					"originalRequest": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"desiredState\": {\n        \"permissions\": [\n            {\n                \"access\": \"WRITE\",\n                \"path\": \"/services/environments/dev/\"\n            }\n        ]\n    },\n    \"metadata\": {\n        \"kind\": \"role\",\n        \"name\": \"role1\",\n        \"tags\": [\n            \"dev\",\n            \"test\"\n        ]\n    }\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/platform/roles/:roleName",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"platform",
+								"roles",
+								":roleName"
+							],
+							"variable": [
+								{
+									"key": "roleName"
+								}
+							]
+						}
+					},
+					"status": "Forbidden",
+					"code": 403,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n \"message\": \"user is not authorized\",\n \"code\": 1235\n}"
+				}
+			]
+		},
+		{
+			"name": "Create a User - admin_full",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"metadata\": {\n        \"name\": \"admin1_gw@acme.com\",\n        \"displayName\": \"admin GW\",\n        \"description\": \"Accountable for deployment of new Applications\"\n    },\n    \"desiredState\": {\n        \"firstName\": \"John\",\n        \"lastName\": \"Doe\",\n        \"email\": \"admin1_gw@acme.com\",\n        \"password\": \"admin1_gw@acme.com\",\n        \"roles\": [\n            {\n                \"ref\": \"/platform/roles/acme_admin_full\"\n            },\n            {\n                \"ref\": \"/platform/roles/admin\"\n            }\n        ]\n    }\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/platform/users",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"platform",
+						"users"
+					],
+					"variable": [
+						{
+							"key": "controller_fqdn",
+							"value": "{{controller_fqdn}}",
+							"type": "string",
+							"description": "The FQDN of your NGNIX Controller."
+						}
+					]
+				},
+				"description": "Creates a new User resource."
+			},
+			"response": [
+				{
+					"name": "User authentication is invalid or missing.\n",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"metadata\": {\n        \"name\": \"john.doe@nginx.com\",\n        \"displayName\": \"John Doe\",\n        \"description\": \"NGINX controller user with prod env role\"\n    },\n    \"desiredState\": {\n        \"firstName\": \"John\",\n        \"lastName\": \"Doe\",\n        \"email\": \"john.doe@nginx.com\",\n        \"password\": \"passwd123\",\n        \"roles\": [\n            {\n                \"ref\": \"/platform/roles/prod\"\n            }\n        ],\n        \"groups\": [\n            {\n                \"ref\": \"/platform/groups/guest\"\n            }\n        ]\n    }\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/platform/users",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"platform",
+								"users"
+							]
+						}
+					},
+					"status": "Unauthorized",
+					"code": 401,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n \"message\": \"No session cookie found in the request header.\",\n \"code\": 3463\n}"
+				},
+				{
+					"name": "The request failed due to insufficient privileges.\n",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"metadata\": {\n        \"name\": \"john.doe@nginx.com\",\n        \"displayName\": \"John Doe\",\n        \"description\": \"NGINX controller user with prod env role\"\n    },\n    \"desiredState\": {\n        \"firstName\": \"John\",\n        \"lastName\": \"Doe\",\n        \"email\": \"john.doe@nginx.com\",\n        \"password\": \"passwd123\",\n        \"roles\": [\n            {\n                \"ref\": \"/platform/roles/prod\"\n            }\n        ],\n        \"groups\": [\n            {\n                \"ref\": \"/platform/groups/guest\"\n            }\n        ]\n    }\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/platform/users",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"platform",
+								"users"
+							]
+						}
+					},
+					"status": "Forbidden",
+					"code": 403,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n \"message\": \"user is not authorized\",\n \"code\": 1235\n}"
+				},
+				{
+					"name": "The request failed due to a conflict with an existing User resource.\n",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"metadata\": {\n        \"name\": \"john.doe@nginx.com\",\n        \"displayName\": \"John Doe\",\n        \"description\": \"NGINX controller user with prod env role\"\n    },\n    \"desiredState\": {\n        \"firstName\": \"John\",\n        \"lastName\": \"Doe\",\n        \"email\": \"john.doe@nginx.com\",\n        \"password\": \"passwd123\",\n        \"roles\": [\n            {\n                \"ref\": \"/platform/roles/prod\"\n            }\n        ],\n        \"groups\": [\n            {\n                \"ref\": \"/platform/groups/guest\"\n            }\n        ]\n    }\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/platform/users",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"platform",
+								"users"
+							]
+						}
+					},
+					"status": "Conflict",
+					"code": 409,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n \"message\": \"Error creating user: user already exists.\",\n \"code\": 3469\n}"
+				},
+				{
+					"name": "The request cannot be processed because of an internal server error.\n",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"metadata\": {\n        \"name\": \"john.doe@nginx.com\",\n        \"displayName\": \"John Doe\",\n        \"description\": \"NGINX controller user with prod env role\"\n    },\n    \"desiredState\": {\n        \"firstName\": \"John\",\n        \"lastName\": \"Doe\",\n        \"email\": \"john.doe@nginx.com\",\n        \"password\": \"passwd123\",\n        \"roles\": [\n            {\n                \"ref\": \"/platform/roles/prod\"\n            }\n        ],\n        \"groups\": [\n            {\n                \"ref\": \"/platform/groups/guest\"\n            }\n        ]\n    }\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/platform/users",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"platform",
+								"users"
+							]
+						}
+					},
+					"status": "Internal Server Error",
+					"code": 500,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n \"message\": \"Error getting users from the database.\",\n \"code\": 3464\n}"
+				},
+				{
+					"name": "Bad input parameter, or possibly a bad URI. Check the input for typos and try again.\n",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"metadata\": {\n        \"name\": \"john.doe@nginx.com\",\n        \"displayName\": \"John Doe\",\n        \"description\": \"NGINX controller user with prod env role\"\n    },\n    \"desiredState\": {\n        \"firstName\": \"John\",\n        \"lastName\": \"Doe\",\n        \"email\": \"john.doe@nginx.com\",\n        \"password\": \"passwd123\",\n        \"roles\": [\n            {\n                \"ref\": \"/platform/roles/prod\"\n            }\n        ],\n        \"groups\": [\n            {\n                \"ref\": \"/platform/groups/guest\"\n            }\n        ]\n    }\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/platform/users",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"platform",
+								"users"
+							]
+						}
+					},
+					"status": "Bad Request",
+					"code": 400,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n \"code\": 3457,\n \"message\": \"Error parsing the user to create from the request payload.\",\n \"details\": [\n  {\n   \"description\": \"Request body has an error: doesn't match the schema: Error at \\\"/desiredState/permissions/0/access\\\":JSON value is not one of the allowed values\\nSchema:\\n  {\\n    \\\"enum\\\": [\\n      \\\"NONE\\\",\\n      \\\"READ\\\",\\n      \\\"WRITE\\\",\\n      \\\"FULL\\\"\\n    ],\\n    \\\"type\\\": \\\"string\\\"\\n  }\\n\\nValue:\\n  \\\"DELETE\\\"\\n\"\n  }\n ]\n}"
+				},
+				{
+					"name": "Successfully created the requested User resource.",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"metadata\": {\n        \"name\": \"john.doe@nginx.com\",\n        \"displayName\": \"John Doe\",\n        \"description\": \"NGINX controller user with prod env role\"\n    },\n    \"desiredState\": {\n        \"firstName\": \"John\",\n        \"lastName\": \"Doe\",\n        \"email\": \"john.doe@nginx.com\",\n        \"password\": \"passwd123\",\n        \"roles\": [\n            {\n                \"ref\": \"/platform/roles/prod\"\n            }\n        ],\n        \"groups\": [\n            {\n                \"ref\": \"/platform/groups/guest\"\n            }\n        ]\n    }\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/platform/users",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"platform",
+								"users"
+							]
+						}
+					},
+					"status": "Created",
+					"code": 201,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n \"metadata\": {\n  \"name\": \"john.doe@nginx.com\",\n  \"kind\": \"user\",\n  \"createTime\": \"2019-07-29T09:12:33.001Z\",\n  \"displayName\": \"John Doe\",\n  \"description\": \"NGINX controller user with prod env role\"\n },\n \"desiredState\": {\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\",\n  \"email\": \"john.doe@nginx.com\",\n  \"password\": \"********\",\n  \"roles\": [\n   {\n    \"ref\": \"/platform/roles/prod\"\n   }\n  ],\n  \"groups\": [\n   {\n    \"ref\": \"/platform/groups/guest\"\n   }\n  ]\n },\n \"currentStatus\": {\n  \"account\": \"1\",\n  \"id\": 123,\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\",\n  \"lastLogin\": 1570132969,\n  \"email\": \"john.doe@nginx.com\",\n  \"authn\": \"amplify\",\n  \"password\": \"********\",\n  \"roles\": [\n   {\n    \"ref\": \"/platform/roles/prod\",\n    \"links\": {\n     \"rel\": \"/api/v1/platform/roles/prod\",\n     \"name\": \"prod\"\n    }\n   }\n  ],\n  \"groups\": [\n   {\n    \"links\": {\n     \"rel\": \"/api/v1/platform/auth/groups/guest\",\n     \"name\": \"guest\"\n    },\n    \"ref\": \"/platform/groups/guest\"\n   }\n  ]\n }\n}"
+				}
+			]
+		},
+		{
+			"name": "Create a User - admin_apps",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"metadata\": {\n        \"name\": \"admin1_apps@acme.com\",\n        \"displayName\": \"admin Apps\",\n        \"description\": \"Accountable for service changes on existing Applications\"\n    },\n    \"desiredState\": {\n        \"firstName\": \"Jane\",\n        \"lastName\": \"Doe\",\n        \"email\": \"admin1_apps@acme.com\",\n        \"password\": \"admin1_apps@acme.com\",\n        \"roles\": [\n            {\n                \"ref\": \"/platform/roles/acme_admin_apps\"\n            },\n            {\n                \"ref\": \"/platform/roles/admin\"\n            }\n        ]\n    }\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/platform/users",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"platform",
+						"users"
+					],
+					"variable": [
+						{
+							"key": "controller_fqdn",
+							"value": "{{controller_fqdn}}",
+							"type": "string",
+							"description": "The FQDN of your NGNIX Controller."
+						}
+					]
+				},
+				"description": "Creates a new User resource."
+			},
+			"response": [
+				{
+					"name": "Bad input parameter, or possibly a bad URI. Check the input for typos and try again.\n",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"metadata\": {\n        \"name\": \"john.doe@nginx.com\",\n        \"displayName\": \"John Doe\",\n        \"description\": \"NGINX controller user with prod env role\"\n    },\n    \"desiredState\": {\n        \"firstName\": \"John\",\n        \"lastName\": \"Doe\",\n        \"email\": \"john.doe@nginx.com\",\n        \"password\": \"passwd123\",\n        \"roles\": [\n            {\n                \"ref\": \"/platform/roles/prod\"\n            }\n        ],\n        \"groups\": [\n            {\n                \"ref\": \"/platform/groups/guest\"\n            }\n        ]\n    }\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/platform/users",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"platform",
+								"users"
+							]
+						}
+					},
+					"status": "Bad Request",
+					"code": 400,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n \"code\": 3457,\n \"message\": \"Error parsing the user to create from the request payload.\",\n \"details\": [\n  {\n   \"description\": \"Request body has an error: doesn't match the schema: Error at \\\"/desiredState/permissions/0/access\\\":JSON value is not one of the allowed values\\nSchema:\\n  {\\n    \\\"enum\\\": [\\n      \\\"NONE\\\",\\n      \\\"READ\\\",\\n      \\\"WRITE\\\",\\n      \\\"FULL\\\"\\n    ],\\n    \\\"type\\\": \\\"string\\\"\\n  }\\n\\nValue:\\n  \\\"DELETE\\\"\\n\"\n  }\n ]\n}"
+				},
+				{
+					"name": "User authentication is invalid or missing.\n",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"metadata\": {\n        \"name\": \"john.doe@nginx.com\",\n        \"displayName\": \"John Doe\",\n        \"description\": \"NGINX controller user with prod env role\"\n    },\n    \"desiredState\": {\n        \"firstName\": \"John\",\n        \"lastName\": \"Doe\",\n        \"email\": \"john.doe@nginx.com\",\n        \"password\": \"passwd123\",\n        \"roles\": [\n            {\n                \"ref\": \"/platform/roles/prod\"\n            }\n        ],\n        \"groups\": [\n            {\n                \"ref\": \"/platform/groups/guest\"\n            }\n        ]\n    }\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/platform/users",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"platform",
+								"users"
+							]
+						}
+					},
+					"status": "Unauthorized",
+					"code": 401,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n \"message\": \"No session cookie found in the request header.\",\n \"code\": 3463\n}"
+				},
+				{
+					"name": "The request cannot be processed because of an internal server error.\n",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"metadata\": {\n        \"name\": \"john.doe@nginx.com\",\n        \"displayName\": \"John Doe\",\n        \"description\": \"NGINX controller user with prod env role\"\n    },\n    \"desiredState\": {\n        \"firstName\": \"John\",\n        \"lastName\": \"Doe\",\n        \"email\": \"john.doe@nginx.com\",\n        \"password\": \"passwd123\",\n        \"roles\": [\n            {\n                \"ref\": \"/platform/roles/prod\"\n            }\n        ],\n        \"groups\": [\n            {\n                \"ref\": \"/platform/groups/guest\"\n            }\n        ]\n    }\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/platform/users",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"platform",
+								"users"
+							]
+						}
+					},
+					"status": "Internal Server Error",
+					"code": 500,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n \"message\": \"Error getting users from the database.\",\n \"code\": 3464\n}"
+				},
+				{
+					"name": "The request failed due to a conflict with an existing User resource.\n",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"metadata\": {\n        \"name\": \"john.doe@nginx.com\",\n        \"displayName\": \"John Doe\",\n        \"description\": \"NGINX controller user with prod env role\"\n    },\n    \"desiredState\": {\n        \"firstName\": \"John\",\n        \"lastName\": \"Doe\",\n        \"email\": \"john.doe@nginx.com\",\n        \"password\": \"passwd123\",\n        \"roles\": [\n            {\n                \"ref\": \"/platform/roles/prod\"\n            }\n        ],\n        \"groups\": [\n            {\n                \"ref\": \"/platform/groups/guest\"\n            }\n        ]\n    }\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/platform/users",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"platform",
+								"users"
+							]
+						}
+					},
+					"status": "Conflict",
+					"code": 409,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n \"message\": \"Error creating user: user already exists.\",\n \"code\": 3469\n}"
+				},
+				{
+					"name": "The request failed due to insufficient privileges.\n",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"metadata\": {\n        \"name\": \"john.doe@nginx.com\",\n        \"displayName\": \"John Doe\",\n        \"description\": \"NGINX controller user with prod env role\"\n    },\n    \"desiredState\": {\n        \"firstName\": \"John\",\n        \"lastName\": \"Doe\",\n        \"email\": \"john.doe@nginx.com\",\n        \"password\": \"passwd123\",\n        \"roles\": [\n            {\n                \"ref\": \"/platform/roles/prod\"\n            }\n        ],\n        \"groups\": [\n            {\n                \"ref\": \"/platform/groups/guest\"\n            }\n        ]\n    }\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/platform/users",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"platform",
+								"users"
+							]
+						}
+					},
+					"status": "Forbidden",
+					"code": 403,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n \"message\": \"user is not authorized\",\n \"code\": 1235\n}"
+				},
+				{
+					"name": "Successfully created the requested User resource.",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"metadata\": {\n        \"name\": \"john.doe@nginx.com\",\n        \"displayName\": \"John Doe\",\n        \"description\": \"NGINX controller user with prod env role\"\n    },\n    \"desiredState\": {\n        \"firstName\": \"John\",\n        \"lastName\": \"Doe\",\n        \"email\": \"john.doe@nginx.com\",\n        \"password\": \"passwd123\",\n        \"roles\": [\n            {\n                \"ref\": \"/platform/roles/prod\"\n            }\n        ],\n        \"groups\": [\n            {\n                \"ref\": \"/platform/groups/guest\"\n            }\n        ]\n    }\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/platform/users",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"platform",
+								"users"
+							]
+						}
+					},
+					"status": "Created",
+					"code": 201,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n \"metadata\": {\n  \"name\": \"john.doe@nginx.com\",\n  \"kind\": \"user\",\n  \"createTime\": \"2019-07-29T09:12:33.001Z\",\n  \"displayName\": \"John Doe\",\n  \"description\": \"NGINX controller user with prod env role\"\n },\n \"desiredState\": {\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\",\n  \"email\": \"john.doe@nginx.com\",\n  \"password\": \"********\",\n  \"roles\": [\n   {\n    \"ref\": \"/platform/roles/prod\"\n   }\n  ],\n  \"groups\": [\n   {\n    \"ref\": \"/platform/groups/guest\"\n   }\n  ]\n },\n \"currentStatus\": {\n  \"account\": \"1\",\n  \"id\": 123,\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\",\n  \"lastLogin\": 1570132969,\n  \"email\": \"john.doe@nginx.com\",\n  \"authn\": \"amplify\",\n  \"password\": \"********\",\n  \"roles\": [\n   {\n    \"ref\": \"/platform/roles/prod\",\n    \"links\": {\n     \"rel\": \"/api/v1/platform/roles/prod\",\n     \"name\": \"prod\"\n    }\n   }\n  ],\n  \"groups\": [\n   {\n    \"links\": {\n     \"rel\": \"/api/v1/platform/auth/groups/guest\",\n     \"name\": \"guest\"\n    },\n    \"ref\": \"/platform/groups/guest\"\n   }\n  ]\n }\n}"
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "controller_fqdn",
+			"value": ""
+		},
+		{
+			"key": "baseUrl",
+			"value": ""
+		},
+		{
+			"key": "username",
+			"value": ""
+		},
+		{
+			"key": "password",
+			"value": ""
+		}
+	]
+}
