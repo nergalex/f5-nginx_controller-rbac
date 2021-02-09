@@ -8,8 +8,16 @@ A User resource represents an NGINX Controller User account.
 Assign Roles to Users to define :
 
 - what actions Users can perform in NGINX Controller
-- which ``environment(s)`` Users can access
+- which ``environment(s)`` Users can access (``gateways``, ``components``...)
+
+.. figure:: _figures/gw.png
+
+.. figure:: _figures/component.png
+
 - instance ``location(s)`` on which Users can deploy (``placement`` property in ``gateway`` object)
+
+.. figure:: _figures/location.png
+
 
 Access determines the Role's ability to access a path or object. The options are:
 
