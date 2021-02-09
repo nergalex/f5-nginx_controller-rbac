@@ -9,16 +9,8 @@ Assign Roles to Users to define :
 
 - what actions Users can perform in NGINX Controller
 - which ``environment(s)`` Users can access (``gateways``, ``components``...)
-
-.. figure:: _figures/gw.png
-    :height: 200
-    :width: 200
-.. figure:: _figures/component.png
-    :width: 50 %
-
 - instance ``location(s)`` on which Users can deploy (``placement`` property in ``gateway`` object)
 
-.. figure:: _figures/location.png
 
 
 Access determines the Role's ability to access a path or object. The options are:
@@ -61,3 +53,9 @@ Demo
 .. raw:: html
 
     <a href="http://www.youtube.com/watch?v=iGFQ6YrJ9Uk"><img src="http://img.youtube.com/vi/iGFQ6YrJ9Uk/0.jpg" width="600" height="400" title="NGINX Controller RBAC" alt="NGINX Controller RBAC"></a>
+
+Object tree
+==================================================
+.. figure:: _figures/gw.png
+.. figure:: _figures/component.png
+.. figure:: _figures/location.png
