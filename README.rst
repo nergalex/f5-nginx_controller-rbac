@@ -54,7 +54,7 @@ Demo
 
     <a href="http://www.youtube.com/watch?v=iGFQ6YrJ9Uk"><img src="http://img.youtube.com/vi/iGFQ6YrJ9Uk/0.jpg" width="600" height="400" title="NGINX Controller RBAC" alt="NGINX Controller RBAC"></a>
 
-Object tree
+Objects tree
 ==================================================
 Gateway:
 
