@@ -56,6 +56,14 @@ Demo
 
 Object tree
 ==================================================
+Gateway:
+
 .. figure:: _figures/gw.png
+
+Component:
+
 .. figure:: _figures/component.png
+
+Location:
+
 .. figure:: _figures/location.png
