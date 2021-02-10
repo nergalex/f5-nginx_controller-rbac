@@ -50,19 +50,19 @@ A Project "ACME" nominate:
 
 Configuration
 ###############
-NetOps decided to allocate dedicated WAF resources to ACME: 2 VMs per region France Central, West Europe.
-NetOps prepared configurations on NGINX Controller:
+NetOps decide to allocate dedicated WAF resources to ACME: 2 VMs per region France Central, West Europe.
+NetOps prepare configurations on NGINX Controller:
 
-- Create 2 platform/``location``: ``acme-france_central``, ``acme-west_europe``
-- Create 4 platform/``instance``, 2 per location: ``acme-fr-vm1``, ``acme-fr-vm2``, ``acme-we-vm1``, ``acme-we-vm2``
-- Create an environment "acme"
-- Create a role ``acme_admin_full`` that limits access to ACME's ``locations`` and ACME's ``environment``
-- Create a role ``acme_admin_apps`` that limits access to ACME's ``Apps`` only
+- Create 2 platform/``location``: acme-france_central, acme-west_europe
+- Create 4 platform/``instance``, 2 per ``location``: acme-fr-vm1, acme-fr-vm2, acme-we-vm1, acme-we-vm2
+- Create an service/``environment``: "acme"
+- Create a platform/``role`` "acme_admin_full" that limits access to ACME's ``locations`` and ACME's ``environment``
+- Create a platform/``role`` "acme_admin_apps" that limits access to ACME's ``Apps`` only
 
 During a maintenance window, NetOps freeze platform changes to ACME's ``instances``:
 
-- Update role ``acme_admin_full`` to READ access
-- Update a role ``acme_admin_apps`` to READ access
+- Update ``role`` "acme_admin_full" to READ access
+- Update ``role`` "acme_admin_apps"" to READ access
 
 Demo
 ###############
