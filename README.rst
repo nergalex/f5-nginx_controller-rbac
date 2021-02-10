@@ -5,11 +5,11 @@ Role Base Access Control
 Principle
 ==================================================
 A User resource represents an NGINX Controller User account.
-Assign Roles to Users to define :
+Assign Roles to Users :
 
 1. Built-in role
 ###############
-Assign a built-in role to define the **upper privilege** (i.e actions) an User can perform in NGINX Controller globally:
+Assign one built-in role to define the **upper privilege** (i.e actions) an User can perform in NGINX Controller globally:
 
 =======     ============    =======================================================================================================================================
 Role        Permissions	    Details
@@ -30,7 +30,7 @@ More details `here <https://docs.nginx.com/nginx-controller/platform/access-mana
 
 2. Custom role(s)
 ###############
-A role defines a **set of permissions** that allow or prevent Users from performing operations in NGINX Controller path or object.
+Create and assign one or multiple roles to defines a **set of permissions** that allow or prevent Users from performing operations in NGINX Controller path or object.
 For each path or object, a permission is set and replace default permission of Built-in role.
 Example:
 
