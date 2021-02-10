@@ -7,18 +7,35 @@ Principle
 A User resource represents an NGINX Controller User account.
 Assign Roles to Users to define :
 
-- what actions Users can perform in NGINX Controller
-- which ``environment(s)`` Users can access (``gateways``, ``components``...)
-- instance ``location(s)`` on which Users can deploy (``placement`` property in ``gateway`` object)
+1. Built-in role
+###############
+Assign a built-in role to define the **upper privilege** (i.e actions) an User can perform in NGINX Controller globally:
 
+=======     ============    =======================================================================================================================================
+Role        Permissions	    Details
+=======     ============    =======================================================================================================================================
+admin		Full	        Full permissions for all Environments and can publish API Definitions.
+user		Write	        Write access to Environments and can publish API Definitions.
+guest		Read-Only	    Read-Only access to Environments and cannot publish API Definitions.
+=======     ============    =======================================================================================================================================
 
-
-Access determines the Role's ability to access a path or object. The options are:
+Permission options are:
 
 - ``NONE``: Does not have any access to the path or object
 - ``READ``: Has read only access (HTTP GET requests)
 - ``WRITE``: Has read and write access (POST, PUT, PATCH requests) but cannot delete
 - ``FULL``: Has read, write and delete access
+
+More details `here <https://docs.nginx.com/nginx-controller/platform/access-management/manage-roles/>`_
+
+2. Custom role(s)
+###############
+A role defines a **set of permissions** that allow or prevent Users from performing operations in NGINX Controller path or object.
+For each path or object, a permission is set and replace default permission of Built-in role.
+Example:
+
+- instance ``location(s)`` on which Users can deploy (``placement`` property in ``gateway`` object)
+- which ``environment(s)`` Users can access (``gateways``, ``components``...)
 
 Use Case
 ==================================================
