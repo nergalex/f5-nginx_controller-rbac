@@ -50,7 +50,7 @@ A Project "ACME" nominate:
 
 Configuration
 ###############
-NetOps decided to allocate dedicated WAF resources to ACME: 2 VMs per region France Central, West Europe
+NetOps decided to allocate dedicated WAF resources to ACME: 2 VMs per region France Central, West Europe.
 NetOps prepared configurations on NGINX Controller:
 
 - Create 2 platform/``location``: ``acme-france_central``, ``acme-west_europe``
